@@ -1,6 +1,5 @@
 import pytest
-from http import HTTPStatus
-from server import app, valid_purchase
+from server import valid_purchase
 
 
 
