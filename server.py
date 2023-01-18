@@ -1,5 +1,6 @@
 import json
 from flask import Flask,render_template,request,redirect,flash,url_for
+from http import HTTPStatus
 
 
 def loadClubs():
@@ -38,7 +39,7 @@ def book(competition,club):
         return render_template('booking.html',club=foundClub,competition=foundCompetition)
     else:
         flash("Something went wrong-please try again")
-        return render_template('welcome.html', club=club, competitions=competitions)
+        return render_template('welcome.html', club=club, competitions=competitions),
 
 
 @app.route('/purchasePlaces',methods=['POST'])
@@ -54,7 +55,7 @@ def purchasePlaces():
         return render_template("welcome.html", club=club, competitions=competitions)
     else:
         flash(purchase_valid[1])
-        return render_template("booking.html", club=club,competition=competition)
+        return render_template("booking.html", club=club,competition=competition), HTTPStatus.BAD_REQUEST
 
 # TODO: Add route for points display
 
