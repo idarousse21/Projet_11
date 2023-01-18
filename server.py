@@ -46,10 +46,15 @@ def purchasePlaces():
     competition = [c for c in competitions if c['name'] == request.form['competition']][0]
     club = [c for c in clubs if c['name'] == request.form['club']][0]
     placesRequired = int(request.form['places'])
-    competition['numberOfPlaces'] = int(competition['numberOfPlaces'])-placesRequired
-    flash('Great-booking complete!')
-    return render_template('welcome.html', club=club, competitions=competitions)
-
+    purchase_valid = valid_purchase(placesRequired,int(competition["numberOfPlaces"]),int(club["points"]))
+    if purchase_valid[0]:
+        competition["numberOfPlaces"] = int(competition['numberOfPlaces'])-placesRequired
+        club["points"]= int(club["points"]) - placesRequired
+        flash(purchase_valid[1])
+        return render_template("welcome.html", club=club, competitions=competitions)
+    else:
+        flash(purchase_valid[1])
+        return render_template("booking.html", club=club,competition=competition)
 
 # TODO: Add route for points display
 
@@ -57,3 +62,20 @@ def purchasePlaces():
 @app.route('/logout')
 def logout():
     return redirect(url_for('index'))
+
+def valid_purchase(places_required,number_places_competition, number_places_club):
+    if places_required > 12:
+        message= "You cannot reserve more than 12 places in a competition."
+        return False, message
+    elif places_required > number_places_club:
+        message= "The club's points balance is lower than the places bought."
+        return False, message
+    elif places_required <=0:
+        message="The number of seats purchased cannot be less than 1"
+        return False, message
+    elif places_required > number_places_competition:
+        message= "The places to ask for are superior to the places available in the competition."
+        return False, message
+    else:
+        message="Great-booking complete!"
+        return True, message
