@@ -24,7 +24,7 @@ class TestValidPurchase:
             ),
         ],
     )
-    def test_valid_purchase(
+    def test_purchase(
         self,
         places_required,
         number_places_competition,
