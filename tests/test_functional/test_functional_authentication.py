@@ -3,21 +3,32 @@ import time
 import pytest
 
 
+def login_to_the_site(driver, user_mail):
+    driver.find_element(By.TAG_NAME, "input").send_keys(user_mail)
+    driver.find_element(By.TAG_NAME, "button").click()
+    time.sleep(1)
+    return driver
+
+
 class TestFunctionalAuthentication:
     @pytest.mark.parametrize(
         "user_mail, message,",
         [
-            ("test@test.com", "The email is incorrect."),
             ("admin@irontemple.com", "Welcome, "),
         ],
     )
-    def test_authentication_(self, driver, user_mail, message):
-        driver.find_element(By.TAG_NAME, "input").send_keys(user_mail)
-        driver.find_element(By.TAG_NAME, "button").click()
-        time.sleep(1)
-        if user_mail == "admin@irontemple.com":
-            assert (message + user_mail) in driver.find_elements(By.TAG_NAME, "h2")[
-                0
-            ].text
-        else:
-            assert message in driver.find_elements(By.TAG_NAME, "li")[0].text
+    def test_authentication_valid(self, driver, user_mail, message):
+        response = login_to_the_site(driver, user_mail)
+        assert (message + user_mail) in response.find_elements(By.TAG_NAME, "h2")[
+            0
+        ].text
+
+    @pytest.mark.parametrize(
+        "user_mail, message,",
+        [
+            ("test@test.com", "The email is incorrect."),
+        ],
+    )
+    def test_authentication_invalid(self, driver, user_mail, message):
+        response = login_to_the_site(driver, user_mail)
+        assert message in response.find_elements(By.TAG_NAME, "li")[0].text

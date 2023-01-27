@@ -9,8 +9,6 @@ def client():
         yield client
 
 
-
-
 @pytest.fixture
 def driver():
     driver = webdriver.Chrome()
