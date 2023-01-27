@@ -9,10 +9,7 @@ def client():
         yield client
 
 
-@pytest.fixture
-def message():
-    data_message = {"invalid": "The email is incorrect.", "valid": "Welcome, "}
-    return data_message
+
 
 @pytest.fixture
 def driver():
