@@ -1,6 +1,8 @@
 import pytest
 from server import app
 import server
+from selenium import webdriver
+from selenium.webdriver.common.by import By
 
 
 @pytest.fixture
@@ -51,15 +53,26 @@ def data_competitions():
 @pytest.fixture
 def data_purchases_clubs():
     data_purchases_clubs = {
-            "test1@club.com": {"test_competition_1": 0, "test_competition_2": 0},
-            "test2@club.com": {"test_competition_1": 0, "test_competition_2": 0},
-            "test3@club.com": {"test_competition_1": 0, "test_competition_2": 0},
-        }
+        "test1@club.com": {"test_competition_1": 0, "test_competition_2": 0},
+        "test2@club.com": {"test_competition_1": 0, "test_competition_2": 0},
+        "test3@club.com": {"test_competition_1": 0, "test_competition_2": 0},
+    }
     return data_purchases_clubs
 
 
 @pytest.fixture
-def data_base_mocker(mocker, data_users, data_competitions,data_purchases_clubs):
+def data_base_mocker(mocker, data_users, data_competitions, data_purchases_clubs):
     mocker.patch.object(server, "clubs", data_users)
     mocker.patch.object(server, "competitions", data_competitions)
     mocker.patch.object(server, "clubs_purchase", data_purchases_clubs)
+
+
+@pytest.fixture
+def driver():
+    driver = webdriver.Chrome()
+    driver.get("http://127.0.0.1:5000/")
+    user_mail = "john@simplylift.co"
+    driver.find_element(By.TAG_NAME, "input").send_keys(user_mail)
+    driver.find_element(By.TAG_NAME, "button").click()
+    yield driver
+    driver.close()

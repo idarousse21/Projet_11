@@ -24,7 +24,6 @@ def purchases_initialization_por_club(clubs, competitions):
     return clubs_purchase
 
 
-
 app = Flask(__name__)
 app.secret_key = "something_special"
 
@@ -80,7 +79,7 @@ def purchasePlaces():
         competition["numberOfPlaces"] = (
             int(competition["numberOfPlaces"]) - placesRequired
         )
-        clubs_purchase[club["email"]][competition["name"]]+= placesRequired
+        clubs_purchase[club["email"]][competition["name"]] += placesRequired
         flash("Great-booking complete!")
         return render_template(
             "welcome.html",
