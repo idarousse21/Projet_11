@@ -15,7 +15,7 @@ def loadCompetitions():
         return listOfCompetitions
 
 
-def dictionary_purchases(clubs, competitions):
+def purchases_initialization_por_club(clubs, competitions):
     clubs_purchase = {}
     for club in clubs:
         clubs_purchase[club["email"]] = {}
@@ -24,17 +24,13 @@ def dictionary_purchases(clubs, competitions):
     return clubs_purchase
 
 
-def dictionary_purchases_update(clubs_purchase, club_email, competition, purchase):
-    clubs_purchase[club_email][competition] += purchase
-    return clubs_purchase
-
 
 app = Flask(__name__)
 app.secret_key = "something_special"
 
 competitions = loadCompetitions()
 clubs = loadClubs()
-clubs_purchase = dictionary_purchases(clubs, competitions)
+clubs_purchase = purchases_initialization_por_club(clubs, competitions)
 
 
 @app.route("/")
@@ -84,9 +80,7 @@ def purchasePlaces():
         competition["numberOfPlaces"] = (
             int(competition["numberOfPlaces"]) - placesRequired
         )
-        dictionary_purchases_update(
-            clubs_purchase, club["email"], competition["name"], placesRequired
-        )
+        clubs_purchase[club["email"]][competition["name"]]+= placesRequired
         flash("Great-booking complete!")
         return render_template(
             "welcome.html",
