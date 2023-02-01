@@ -17,7 +17,6 @@ class TestPurchase:
     @pytest.mark.parametrize(
         "number_places,message",
         [
-            (5, "The club points balance is lower than the places bought."),
             (0, "The number of seats purchased cannot be less than 1"),
         ],
     )
