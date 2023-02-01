@@ -67,7 +67,7 @@ def message_response():
 def driver():
     driver = webdriver.Chrome()
     driver.get("http://127.0.0.1:5000/")
-    user_mail = "admin@irontemple.com"
+    user_mail = "john@simplylift.co"
     driver.find_element(By.TAG_NAME, "input").send_keys(user_mail)
     driver.find_element(By.TAG_NAME, "button").click()
     yield driver
