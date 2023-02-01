@@ -64,7 +64,7 @@ def message_response():
 
 
 @pytest.fixture
-def driver():
+def driver_tests_valid_purchase():
     driver = webdriver.Chrome()
     driver.get("http://127.0.0.1:5000/")
     user_mail = "john@simplylift.co"
