@@ -3,10 +3,6 @@ from flask import Flask, render_template, request, redirect, flash, url_for
 from http import HTTPStatus
 
 
-app = Flask(__name__)
-app.secret_key = "something_special"
-
-
 def loadClubs():
     with open("clubs.json") as c:
         listOfClubs = json.load(c)["clubs"]
@@ -18,6 +14,9 @@ def loadCompetitions():
         listOfCompetitions = json.load(comps)["competitions"]
         return listOfCompetitions
 
+
+app = Flask(__name__)
+app.secret_key = "something_special"
 
 competitions = loadCompetitions()
 clubs = loadClubs()
@@ -60,22 +59,50 @@ def book(competition, club):
 
 @app.route("/purchasePlaces", methods=["POST"])
 def purchasePlaces():
-    competition = [c for c in competitions if c["name"]
-                   == request.form["competition"]][0]
+    competition = [c for c in competitions if c["name"] == request.form["competition"]][
+        0
+    ]
     club = [c for c in clubs if c["name"] == request.form["club"]][0]
     placesRequired = int(request.form["places"])
-    competition["numberOfPlaces"] = int(
-        competition["numberOfPlaces"]) - placesRequired
-    flash("Great-booking complete!")
-    return render_template(
-        "welcome.html",
-        club=club,
-        competitions=competitions)
+    purchase_valid = valid_purchase(
+        placesRequired, int(competition["numberOfPlaces"]), int(club["points"])
+    )
+    if purchase_valid[0]:
+        competition["numberOfPlaces"] = (
+            int(competition["numberOfPlaces"]) - placesRequired
+        )
+        club["points"] = int(club["points"]) - placesRequired
+        flash(purchase_valid[1])
+        return render_template("welcome.html", club=club, competitions=competitions)
+    else:
+        flash(purchase_valid[1])
+        return (
+            render_template("booking.html", club=club, competition=competition),
+            HTTPStatus.BAD_REQUEST,
+        )
 
 
-# TODO: Add route for points display
+@app.route("/displayPoints")
+def display_clubs_points():
+    clubs_sort_by_alphabet = sorted(clubs, key=lambda club: club["name"])
+    return render_template("display_clubs_points.html", clubs=clubs_sort_by_alphabet)
 
 
 @app.route("/logout")
 def logout():
     return redirect(url_for("index"))
+
+
+def valid_purchase(places_required, number_places_competition, number_places_club):
+    if places_required > number_places_club:
+        message = "The club points balance is lower than the places bought."
+        return False, message
+    elif places_required <= 0:
+        message = "The number of seats purchased cannot be less than 1"
+        return False, message
+    elif places_required > number_places_competition:
+        message = "The places to ask for are superior to the places available in the competition."
+        return False, message
+    else:
+        message = "Great-booking complete!"
+        return True, message
