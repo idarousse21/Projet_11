@@ -31,4 +31,5 @@ class TestFunctionalAuthentication:
     )
     def test_authentication_invalid(self, driver, user_mail, message):
         response = login_to_the_site(driver, user_mail)
+        time.sleep(5)
         assert message in response.find_elements(By.TAG_NAME, "li")[0].text
