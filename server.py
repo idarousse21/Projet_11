@@ -71,7 +71,6 @@ def purchasePlaces():
         )
 
 
-# TODO: Add route for points display
 @app.route("/displayPoints")
 def display_clubs_points():
     clubs_sort_by_alphabet = sorted(clubs, key=lambda club: club["name"])
