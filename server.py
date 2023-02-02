@@ -1,6 +1,7 @@
 import json
 from flask import Flask, render_template, request, redirect, flash, url_for
 from http import HTTPStatus
+from collections import defaultdict
 
 
 def loadClubs():
@@ -16,11 +17,10 @@ def loadCompetitions():
 
 
 def purchases_initialization_por_club(clubs, competitions):
-    clubs_purchase = {}
+    clubs_purchase = defaultdict(lambda:defaultdict(int))
     for club in clubs:
-        clubs_purchase[club["email"]] = {}
         for competition in competitions:
-            clubs_purchase[club["email"]][competition["name"]] = 0
+            clubs_purchase[club["email"]][competition["name"]]
     return clubs_purchase
 
 
