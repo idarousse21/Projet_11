@@ -31,6 +31,7 @@ class TestMultiplePurchase:
             club_purchase += purchases
             response = function_purchases(driver, purchases)
         message = "You cannot buy more than 12 places for this competition."
+
         assert message == response.find_elements(By.TAG_NAME, "li")[
             0
-        ].text or not response.find_element(By.LINK_TEXT, "Book Places")
+        ].text
