@@ -17,7 +17,7 @@ def loadCompetitions():
 
 
 def purchases_initialization_por_club(clubs, competitions):
-    clubs_purchase = defaultdict(lambda:defaultdict(int))
+    clubs_purchase = defaultdict(lambda: defaultdict(int))
     for club in clubs:
         for competition in competitions:
             clubs_purchase[club["email"]][competition["name"]]
@@ -54,7 +54,10 @@ def book(competition, club):
     foundCompetition = [c for c in competitions if c["name"] == competition][0]
     if foundClub and foundCompetition:
         return render_template(
-            "booking.html", club=foundClub, competition=foundCompetition
+            "booking.html",
+            club=foundClub,
+            competition=foundCompetition,
+            club_competition_purchases=clubs_purchase,
         )
     else:
         flash("Something went wrong-please try again")
@@ -91,7 +94,12 @@ def purchasePlaces():
     else:
         flash("You cannot buy more than 12 places for this competition.")
         return (
-            render_template("booking.html", club=club, competition=competition),
+            render_template(
+                "booking.html",
+                club=club,
+                competition=competition,
+                club_competition_purchases=clubs_purchase,
+            ),
             HTTPStatus.BAD_REQUEST,
         )
 
