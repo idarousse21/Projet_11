@@ -1,6 +1,7 @@
 import json
 from flask import Flask, render_template, request, redirect, flash, url_for
 from http import HTTPStatus
+from collections import defaultdict
 
 
 def loadClubs():
@@ -15,11 +16,20 @@ def loadCompetitions():
         return listOfCompetitions
 
 
+def purchases_initialization_por_club(clubs, competitions):
+    clubs_purchase = defaultdict(lambda: defaultdict(int))
+    for club in clubs:
+        for competition in competitions:
+            clubs_purchase[club["email"]][competition["name"]]
+    return clubs_purchase
+
+
 app = Flask(__name__)
 app.secret_key = "something_special"
 
 competitions = loadCompetitions()
 clubs = loadClubs()
+clubs_purchase = purchases_initialization_por_club(clubs, competitions)
 
 
 @app.route("/")
@@ -30,12 +40,8 @@ def index():
 @app.route("/showSummary", methods=["POST"])
 def showSummary():
     try:
-        club = [club for club in clubs if club["email"]
-                == request.form["email"]][0]
-        return render_template(
-            "welcome.html",
-            club=club,
-            competitions=competitions)
+        club = [club for club in clubs if club["email"] == request.form["email"]][0]
+        return render_template("welcome.html", club=club, competitions=competitions)
     except IndexError:
         flash("The email is incorrect.")
         return redirect(url_for("index"))
@@ -47,14 +53,19 @@ def book(competition, club):
     foundCompetition = [c for c in competitions if c["name"] == competition][0]
     if foundClub and foundCompetition:
         return render_template(
-            "booking.html", club=foundClub, competition=foundCompetition
+            "booking.html",
+            club=foundClub,
+            competition=foundCompetition,
+            club_competition_purchases=clubs_purchase,
         )
     else:
         flash("Something went wrong-please try again")
         return render_template(
             "welcome.html",
             club=club,
-            competitions=competitions)
+            competitions=competitions,
+            club_competition_purchases=clubs_purchase,
+        )
 
 
 @app.route("/purchasePlaces", methods=["POST"])
@@ -64,22 +75,24 @@ def purchasePlaces():
     ]
     club = [c for c in clubs if c["name"] == request.form["club"]][0]
     placesRequired = int(request.form["places"])
+    purchases_club = clubs_purchase[club["email"]][competition["name"]]
     purchase_valid = valid_purchase(
-        placesRequired, int(competition["numberOfPlaces"]), int(club["points"])
+        placesRequired,
+        int(competition["numberOfPlaces"]),
+        int(club["points"]),
+        int(purchases_club),
     )
     if purchase_valid[0]:
         competition["numberOfPlaces"] = (
             int(competition["numberOfPlaces"]) - placesRequired
         )
         club["points"] = int(club["points"]) - placesRequired
+        clubs_purchase[club["email"]][competition["name"]] += placesRequired
         flash(purchase_valid[1])
         return render_template("welcome.html", club=club, competitions=competitions)
     else:
         flash(purchase_valid[1])
-        return (
-            render_template("booking.html", club=club, competition=competition),
-            HTTPStatus.BAD_REQUEST,
-        )
+        return render_template("booking.html", club=club, competition=competition)
 
 
 @app.route("/displayPoints")
@@ -93,9 +106,14 @@ def logout():
     return redirect(url_for("index"))
 
 
-def valid_purchase(places_required, number_places_competition, number_places_club):
+def valid_purchase(
+    places_required, number_places_competition, number_places_club, places_club
+):
     if places_required > number_places_club:
         message = "The club points balance is lower than the places bought."
+        return False, message
+    elif (places_required + places_club) > 12:
+        message = "You cannot buy more than 12 places for this competition."
         return False, message
     elif places_required <= 0:
         message = "The number of seats purchased cannot be less than 1"
