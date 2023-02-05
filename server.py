@@ -2,6 +2,7 @@ import json
 from flask import Flask, render_template, request, redirect, flash, url_for
 from http import HTTPStatus
 from collections import defaultdict
+from datetime import datetime
 
 
 def loadClubs():
@@ -23,13 +24,21 @@ def purchases_initialization_por_club(clubs, competitions):
             clubs_purchase[club["email"]][competition["name"]]
     return clubs_purchase
 
+def get_future_competitions():
+    today_date = datetime.now()
+    return [
+        competition
+        for competition in loadCompetitions()
+        if datetime.strptime(competition["date"], "%Y-%m-%d %H:%M:%S") > today_date
+    ]
 
 app = Flask(__name__)
 app.secret_key = "something_special"
 
-competitions = loadCompetitions()
 clubs = loadClubs()
-clubs_purchase = purchases_initialization_por_club(clubs, competitions)
+clubs_purchase = purchases_initialization_por_club(clubs, get_future_competitions())
+
+
 
 
 @app.route("/")
@@ -44,7 +53,7 @@ def showSummary():
         return render_template(
             "welcome.html",
             club=club,
-            competitions=competitions,
+            competitions=get_future_competitions(),
             club_competition_purchases=clubs_purchase,
         )
     except IndexError:
@@ -55,7 +64,7 @@ def showSummary():
 @app.route("/book/<competition>/<club>")
 def book(competition, club):
     foundClub = [c for c in clubs if c["name"] == club][0]
-    foundCompetition = [c for c in competitions if c["name"] == competition][0]
+    foundCompetition = [c for c in get_future_competitions() if c["name"] == competition][0]
     if foundClub and foundCompetition:
         return render_template(
             "booking.html",
@@ -68,14 +77,14 @@ def book(competition, club):
         return render_template(
             "welcome.html",
             club=club,
-            competitions=competitions,
+            competitions=get_future_competitions(),
             club_competition_purchases=clubs_purchase,
         )
 
 
 @app.route("/purchasePlaces", methods=["POST"])
 def purchasePlaces():
-    competition = [c for c in competitions if c["name"] == request.form["competition"]][
+    competition = [c for c in get_future_competitions() if c["name"] == request.form["competition"]][
         0
     ]
     club = [c for c in clubs if c["name"] == request.form["club"]][0]
@@ -97,7 +106,7 @@ def purchasePlaces():
         return render_template(
             "welcome.html",
             club=club,
-            competitions=competitions,
+            competitions=get_future_competitions(),
             club_competition_purchases=clubs_purchase,
         )
     else:
