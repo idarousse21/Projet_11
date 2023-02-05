@@ -15,7 +15,7 @@ class TestValidPurchase:
                 False,
                 "The club points balance is lower than the places bought.",
             ),
-            (0, 10, 7,0, False, "The number of seats purchased cannot be less than 1"),
+            (0, 10, 7, 0, False, "The number of seats purchased cannot be less than 1"),
             (
                 10,
                 5,
