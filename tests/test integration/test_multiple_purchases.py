@@ -22,7 +22,6 @@ class TestMultiplePurchase:
             "places": 5,
         }
         response = client.post("/purchasePlaces", data=data)
-        print(response.status_code)
         assert response.status_code == HTTP_OK
         assert "Great-booking complete!" in response.data.decode()
         assert str(data_purchases_clubs[club_email][comp]) in response.data.decode()
