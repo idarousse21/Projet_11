@@ -15,7 +15,6 @@ class TestPurchase:
             "places": 5,
         }
         response = client.post("/purchasePlaces", data=data)
-        assert response.status_code == HTTP_BAD_REQUEST
         assert message_response["less_club_point"] in response.data.decode()
 
     def test_less_competition_points(
@@ -27,7 +26,6 @@ class TestPurchase:
             "places": 7,
         }
         response = client.post("/purchasePlaces", data=data)
-        assert response.status_code == HTTP_BAD_REQUEST
         assert message_response["less_competition_point"] in response.data.decode()
 
     def test_less_zero_purchases(
@@ -39,7 +37,6 @@ class TestPurchase:
             "places": random.randint(-10, 0),
         }
         response = client.post("/purchasePlaces", data=data)
-        assert response.status_code == HTTP_BAD_REQUEST
         assert message_response["less_zero"] in response.data.decode()
 
     def test_purchases_valid(

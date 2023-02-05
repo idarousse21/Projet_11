@@ -3,7 +3,6 @@ import pytest
 
 
 def login_to_the_site(driver, user_mail):
-
     driver.find_element(By.TAG_NAME, "input").send_keys(user_mail)
     driver.find_element(By.TAG_NAME, "button").click()
     return driver

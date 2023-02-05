@@ -41,7 +41,12 @@ def index():
 def showSummary():
     try:
         club = [club for club in clubs if club["email"] == request.form["email"]][0]
-        return render_template("welcome.html", club=club, competitions=competitions)
+        return render_template(
+            "welcome.html",
+            club=club,
+            competitions=competitions,
+            club_competition_purchases=clubs_purchase,
+        )
     except IndexError:
         flash("The email is incorrect.")
         return redirect(url_for("index"))
@@ -89,10 +94,20 @@ def purchasePlaces():
         club["points"] = int(club["points"]) - placesRequired
         clubs_purchase[club["email"]][competition["name"]] += placesRequired
         flash(purchase_valid[1])
-        return render_template("welcome.html", club=club, competitions=competitions)
+        return render_template(
+            "welcome.html",
+            club=club,
+            competitions=competitions,
+            club_competition_purchases=clubs_purchase,
+        )
     else:
         flash(purchase_valid[1])
-        return render_template("booking.html", club=club, competition=competition)
+        return render_template(
+            "booking.html",
+            club=club,
+            competition=competition,
+            club_competition_purchases=clubs_purchase,
+        )
 
 
 @app.route("/displayPoints")

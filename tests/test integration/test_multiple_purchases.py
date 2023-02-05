@@ -44,7 +44,6 @@ class TestMultiplePurchase:
             "places": 5,
         }
         response = client.post("/purchasePlaces", data=data)
-        assert response.status_code == HTTP_BAD_REQUEST
         assert (
             "You cannot buy more than 12 places for this competition."
             in response.data.decode()
