@@ -65,6 +65,7 @@ def message_response():
 @pytest.fixture
 def driver():
     driver = webdriver.Chrome()
+    driver.implicitly_wait(10)
     driver.get("http://127.0.0.1:5000/")
     yield driver
     driver.close()

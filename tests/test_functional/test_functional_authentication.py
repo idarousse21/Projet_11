@@ -1,12 +1,11 @@
 from selenium.webdriver.common.by import By
-import time
 import pytest
 
 
 def login_to_the_site(driver, user_mail):
+
     driver.find_element(By.TAG_NAME, "input").send_keys(user_mail)
     driver.find_element(By.TAG_NAME, "button").click()
-    time.sleep(1)
     return driver
 
 
@@ -31,5 +30,4 @@ class TestFunctionalAuthentication:
     )
     def test_authentication_invalid(self, driver, user_mail, message):
         response = login_to_the_site(driver, user_mail)
-        time.sleep(5)
         assert message in response.find_elements(By.TAG_NAME, "li")[0].text
