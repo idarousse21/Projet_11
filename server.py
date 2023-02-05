@@ -1,6 +1,5 @@
 import json
 from flask import Flask, render_template, request, redirect, flash, url_for
-from http import HTTPStatus
 from collections import defaultdict
 from datetime import datetime
 
@@ -24,6 +23,7 @@ def purchases_initialization_por_club(clubs, competitions):
             clubs_purchase[club["email"]][competition["name"]]
     return clubs_purchase
 
+
 def get_future_competitions():
     today_date = datetime.now()
     return [
@@ -32,13 +32,13 @@ def get_future_competitions():
         if datetime.strptime(competition["date"], "%Y-%m-%d %H:%M:%S") > today_date
     ]
 
+
 app = Flask(__name__)
 app.secret_key = "something_special"
 
 clubs = loadClubs()
 clubs_purchase = purchases_initialization_por_club(clubs, get_future_competitions())
 competitions = get_future_competitions()
-
 
 
 @app.route("/")
@@ -84,7 +84,7 @@ def book(competition, club):
 
 @app.route("/purchasePlaces", methods=["POST"])
 def purchasePlaces():
-    
+
     competition = [c for c in competitions if c["name"] == request.form["competition"]][
         0
     ]
