@@ -74,9 +74,7 @@ def message_response():
 @pytest.fixture
 def data_base_mocker(mocker, data_users, data_competitions, data_purchases_clubs):
     mocker.patch.object(server, "clubs", data_users)
-    mocker.patch.object(
-        server, "get_future_competitions", return_value=data_competitions
-    )
+    mocker.patch.object(server, "competitions", data_competitions)
     mocker.patch.object(server, "clubs_purchase", data_purchases_clubs)
 
 
