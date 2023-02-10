@@ -1,16 +1,15 @@
 from freezegun import freeze_time
 from server import get_future_competitions
+import pytest
 
 
 class TestUnitPastCompetition:
-    @freeze_time("2023-01-14")
-    def test_future_competition_competitions_2023_01_14(self):
-        assert 2 == len(get_future_competitions())
-
-    @freeze_time("2022-05-14")
-    def test_future_competition_competitions_2022_05_14(self):
-        assert 3 == len(get_future_competitions())
-
-    @freeze_time("2025-01-20")
-    def test_future_competition_competitions_2025_01_20(self):
-        assert 0 == len(get_future_competitions())
+    @pytest.mark.parametrize(
+        "datetime,number_competition",
+        [("2023-01-14", 2), ("2022-05-14", 3), ("2025-01-20", 0)],
+    )
+    def test_future_competition_competitions_2023_01_14(
+        self, datetime, number_competition
+    ):
+        with freeze_time(datetime):
+            assert number_competition == len(get_future_competitions())
