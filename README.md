@@ -1,51 +1,84 @@
-# gudlift-registration
+<h1 align ="center">Explication et lancement du code</h1>
 
-1. Why
+------------------------------
+<h2 align = "center"> Application et Bibliothèque</h2>
 
-
-    This is a proof of concept (POC) project to show a light-weight version of our competition booking platform. The aim is the keep things as light as possible, and use feedback from the users to iterate.
-
-2. Getting Started
-
-    This project uses the following technologies:
-
-    * Python v3.x+
-
-    * [Flask](https://flask.palletsprojects.com/en/1.1.x/)
-
-        Whereas Django does a lot of things for us out of the box, Flask allows us to add only what we need. 
-     
-
-    * [Virtual environment](https://virtualenv.pypa.io/en/stable/installation.html)
-
-        This ensures you'll be able to install the correct packages without interfering with Python on your machine.
-
-        Before you begin, please ensure you have this installed globally. 
-
-
-3. Installation
-
-    - After cloning, change into the directory and type <code>virtualenv .</code>. This will then set up a a virtual python environment within that directory.
-
-    - Next, type <code>source bin/activate</code>. You should see that your command prompt has changed to the name of the folder. This means that you can install packages in here without affecting affecting files outside. To deactivate, type <code>deactivate</code>
-
-    - Rather than hunting around for the packages you need, you can install in one step. Type <code>pip install -r requirements.txt</code>. This will install all the packages listed in the respective file. If you install a package, make sure others know by updating the requirements.txt file. An easy way to do this is <code>pip freeze > requirements.txt</code>
-
-    - Flask requires that you set an environmental variable to the python file. However you do that, you'll want to set the file to be <code>server.py</code>. Check [here](https://flask.palletsprojects.com/en/1.1.x/quickstart/#a-minimal-application) for more details
-
-    - You should now be ready to test the application. In the directory, type either <code>flask run</code> or <code>python -m flask run</code>. The app should respond with an address you should be able to go to using your browser.
-
-4. Current Setup
-
-    The app is powered by [JSON files](https://www.tutorialspoint.com/json/json_quick_guide.htm). This is to get around having a DB until we actually need one. The main ones are:
-     
-    * competitions.json - list of competitions
-    * clubs.json - list of clubs with relevant information. You can look here to see what email addresses the app will accept for login.
-
-5. Testing
-
-    You are free to use whatever testing framework you like-the main thing is that you can show what tests you are using.
-
-    We also like to show how well we're testing, so there's a module called 
-    [coverage](https://coverage.readthedocs.io/en/coverage-5.1/) you should add to your project.
-
+<p>
+    Pour employer le code, tout d'abord, installez l'application python.
+<ul>
+    <li>
+        <a href = "https://www.python.org/downloads/">Python </a>
+    </li>
+</ul>
+</p>
+<p>
+    Nous utiliserons aussi les bibliothèques python:
+<ul>
+    <li>
+        <a href = "https://flask.palletsprojects.com/en/2.2.x/">Flask </a>
+    </li>
+    <li>
+        <a href = "https://docs.pytest.org/en/7.1.x/contents.html">Pytest</a>
+    </li>
+    <li>
+        <a href = "https://docs.locust.io/en/stable/">Locust</a>
+    </li>
+</ul>
+</p>
+<h2 align = "center"> Lancement du code </h2>
+<p>Pour commencer, vous devez lancer l'invite de commande et employer les commandes suivantes:
+    <ol>
+        <li>Clonez le projet:</li>
+                <ul><li>git clone https://github.com/idarousse21/Projet_11 </li></ul>
+            <li>Dirigez-vous sur le dossier cloné:</li>
+                <ul><li>cd Projet_11 </li></ul>
+            <li>Créez un environnement virtuel:</li>
+                <ul><li>python -m venv env</li></ul>
+            <li>Puis activation de l'environnement virtuel:</li>
+                <ul><li>Sur Windows:</li></ul>
+                env\Scripts\activate
+                <ul><li>Sous Mac/Linus:</li></ul>
+                source/env/Scripts/activate
+            <li>Télécharger les bibliothèque nécessaire :</li>
+                <ul><li>pip install -r requirements.txt</li></ul>
+            <li>Executer le serveur Flask à partir de la racine du projet:</li>
+                <ul><li>set FLASK_APP=server.py</li></ul>
+            <li>Démarrer le serveur Flask:</li>
+                <ul><li>flask run</li></ul>
+            <li>Entrez l'url ci-dessous dans votre navigateur pour acceder au site: </li>
+                <ul><li>http://127.0.0.1:5000/</li></ul>
+    </ol>
+</p>
+<h2 align = "center"> Lancement des tests </h2>
+<p>Pour lancer les test employer les commandes suivantes sur l'invite de commande :</p>
+    <ul>
+        <li>Tout les tests:</li>
+            <ul><li>pytest</li></ul>
+        <li>Test unit:</li>
+            <ul><li>pytest pytest tests\test_unit</li></ul>
+        <li>Test integration:</li>
+            <ul><li>pytest "tests\test integration"</li></ul>
+        <li>Test functional:</li>
+            <ul><li>pytest tests\test_functional</li></ul>   
+    </ul>
+<h2 align = "center"> Lancement du test de perfomance</h2>
+    <p>Sur une invite de commande</p>
+    <ol>
+        <li>Executer le serveur Flask à partir de la racine du projet:</li>
+            <ul><li>set FLASK_APP=server.py</li></ul>
+        <li>Démarrer le serveur Flask:</li>
+            <ul><li>flask run</li></ul>
+        <li>Démarrer le serveur Flask:</li>
+            <ul><li>flask run</li></ul>
+    <p>Ouvré une nouvelle invite de commande</p>
+        <li>Acceder au dossier du test de performance:</li>
+            <ul><li>cd Projet_11\tests\test_performance</li></ul>
+        <li>Executer locust:</li>
+            <ul><li>locust</li></ul>
+        <li>Entrez l'url ci-dessous dans votre navigateur:</li>
+            <ul><li>http://localhost:8089</li></ul>
+        <li>Completer les informations demander:</li>
+            <ul><li>Number of users: 6</li></ul>
+            <ul><li>Spawn rate: 1</li></ul>
+            <ul><li>Host: http://127.0.0.1:5000/</li></ul> 
+    </ol>
